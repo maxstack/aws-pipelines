@@ -22,7 +22,7 @@ node {
     stage ('Generate artifacts') {
       sh "echo ${env.AMI} > AMI.artifact"
       sh "echo ${env.SNAPSHOT_ID} > SNAPSHOT.artifact"
-      sh "aws ec2 describe-images --image-id ${env.AMI > AMIDETAIL.artifact"
+      sh "aws ec2 describe-images --image-id ${env.AMI} > AMIDETAIL.artifact"
     }
 
     // Wait for approval
