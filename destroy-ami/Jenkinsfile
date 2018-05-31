@@ -31,7 +31,10 @@ node {
     stage ('Destroy AMI') {
       sh "aws ec2 deregister-image --image-id ${env.AMI} && aws ec2 delete-snapshot --snapshot-id ${SNAPSHOT_ID}"
     }
- 
+
+    stage ("Archive artifacts") {
+      archiveArtifacts artifacts: '*.artifact'
+    }
 
     // Clean the workspace
     cleanWs()
