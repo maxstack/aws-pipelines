@@ -13,13 +13,27 @@ node {
     stage ('Prepare cmd') {
 
     SNAPSHOT_ID = sh(returnStdout: true, script: """aws ec2 describe-images --image-ids ${env.AMI} --query 'Images[*].BlockDeviceMappings[*].Ebs.SnapshotId' --region ${env.REGION} --output text""").trim()
-    echo "THE FOLLOWING COMMAND WILL BE RUN IF APPROVED:"
-    echo "aws ec2 deregister-image --image-id ${env.AMI} && aws ec2 delete-snapshot --snapshot-id ${SNAPSHOT_ID}"
+    //echo "aws ec2 deregister-image --image-id ${env.AMI} && aws ec2 delete-snapshot --snapshot-id ${SNAPSHOT_ID}"
+
+    echo 'Describe the chosen AMI'
+    AMI-DETAIL = sh "aws ec2 describe-images --image-id ${env.AMI}"
+    AMI-DETAIL
+    }
+
+    stage ('Generate artifacts') {
+      sh "echo ${env.AMI} > AMI.artifact"
+      sh "echo ${env.SNAPSHOT_ID} > SNAPSHOT.artifact"
+      sh "echo ${AMI-DETAIL} > AMI-DETAIL.artifact"
     }
 
     // Wait for approval
     input "Destroy AMI: ${env.AMI} ?"
+
+    stage ('Destroy AMI') {
+      sh "aws ec2 deregister-image --image-id ${env.AMI} && aws ec2 delete-snapshot --snapshot-id ${SNAPSHOT_ID}"
+    }
  
+
     // Clean the workspace
     cleanWs()
   }
