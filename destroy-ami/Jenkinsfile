@@ -12,12 +12,12 @@ node {
 
     stage ('Prepare cmd') {
 
-    SNAPSHOT_ID = sh(returnStdout: true, script: """aws ec2 describe-images --image-ids ${AMI_ID} --query 'Images[*].BlockDeviceMappings[*].Ebs.SnapshotId' --region ${REGION} --output text""").trim()
-    echo "aws ec2 deregister-image --image-id ${AMI_ID} && aws ec2 delete-snapshot --snapshot-id ${SNAPSHOT_ID}"
+    SNAPSHOT_ID = sh(returnStdout: true, script: """aws ec2 describe-images --image-ids ${env.AMI_ID} --query 'Images[*].BlockDeviceMappings[*].Ebs.SnapshotId' --region ${env.REGION} --output text""").trim()
+    echo "aws ec2 deregister-image --image-id ${env.AMI_ID} && aws ec2 delete-snapshot --snapshot-id ${SNAPSHOT_ID}"
     }
 
     // Wait for approval
-    input "Destroy AMI: ${AMI_ID} ?"
+    input "Destroy AMI: ${env.AMI_ID} ?"
  
     // Clean the workspace
     cleanWs()
