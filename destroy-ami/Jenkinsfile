@@ -16,14 +16,13 @@ node {
     //echo "aws ec2 deregister-image --image-id ${env.AMI} && aws ec2 delete-snapshot --snapshot-id ${SNAPSHOT_ID}"
 
     echo 'Describe the chosen AMI'
-    AMIDETAIL = sh(returnStdout: true, script: "aws ec2 describe-images --image-id ${env.AMI}").trim()
-    AMIDETAIL
+    sh "aws ec2 describe-images --image-id ${env.AMI}"
     }
 
     stage ('Generate artifacts') {
       sh "echo ${env.AMI} > AMI.artifact"
       sh "echo ${env.SNAPSHOT_ID} > SNAPSHOT.artifact"
-      sh "echo ${AMIDETAIL} > AMI-DETAIL.artifact"
+      sh "aws ec2 describe-images --image-id ${env.AMI > AMIDETAIL.artifact"
     }
 
     // Wait for approval
